@@ -2,6 +2,7 @@
 
 # dependencies
 /web-app/node_modules
+/web-api/node_modules
 /.pnp
 .pnp.js
 
