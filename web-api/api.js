@@ -6,6 +6,7 @@ const axios = require('axios');
 
 // import models
 const User = require('./models/user');
+const Param = require('./models/param');
 
 // define app
 const app = express();
@@ -116,6 +117,107 @@ app.get('/users/:userId/details', (req, res) => {
         }
     });
 });
+
+app.get('/param/:pit/:location', (req, res) => {
+    const { pit, location } = req.params;
+    Param.findOne({ pit, location }, (err, param) => {
+        if (err || ! param) {
+            return err
+                ? res.json({
+                    'success': false,
+                    'message': err
+                })
+                : res.json({
+                    'success': false,
+                    'message': 'Invalid Location.'
+                });
+        }
+        else {
+            let { knowledgebase, georisk, prelimdesign, engagement, commitment, revision } = param;
+            return res.json({
+                'success': true,
+                'message': 'Successfully retrieved location details.',
+                knowledgebase,
+                georisk,
+                prelimdesign,
+                engagement,
+                commitment,
+                revision
+            });
+        }
+    });
+});
+
+app.get('/param/add-param', (req, res) => {
+    const { pit, location, knowledgebase, georisk, prelimdesign, engagement, commitment } = req.body;
+    Param.findOne({ pit, location }, (err, found) => {
+        if (err || found) {
+            return err
+                ? res.json({
+                    'success': false,
+                    'message': err
+                })
+                : res.json({
+                    'success': false,
+                    'message': 'location already taken'
+                });
+        }
+        else {
+            let newParam = new Param({
+                'pit': pit,
+                'location': location,
+                'knowledgebase': knowledgebase,
+                'georisk': georisk,
+                'prelimdesign': prelimdesign,
+                'engagement': engagement,
+                'commitment': commitment,
+                'revision': 1
+            });
+            newParam.save(err => {
+                return err
+                    ? res.json({
+                        'success': false,
+                        'message': err
+                    })
+                    : res.json({
+                        'success': true,
+                        'message': 'New param created successfully.',
+                    })
+            });
+        }
+    });
+});
+
+app.get('/param/edit-param', (req, res) => {
+    const { pit, location, knowledgebase, georisk, prelimdesign, engagement, commitment } = req.body;
+    Param.findOne({ pit, location }, (err, found) => {
+        if (err) {
+            return err
+        }else if(found){
+            let { param } = found;
+            param.pit = pit;
+            param.location = location;
+            param.knowledgebase = knowledgebase;
+            param.georisk = georisk;
+            param.prelimdesign = prelimdesign;
+            param.engagement = engagement;
+            param.commitment = commitment;
+
+            param.save(err => {
+                return err
+                    ? res.json({
+                        'success':false,
+                        'message': err
+                    })
+                    : res.json({
+                        'success':true,
+                        'message': 'Edit param was suucessful'
+                    })
+            })
+        }
+    });
+});
+
 
 app.get('/', (req,res) => {
     return res.json({

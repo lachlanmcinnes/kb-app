@@ -40,13 +40,19 @@ class Navigation extends Component {
             <div className="collapse navbar-collapse" id="expanded-nav">
                 <ul className="navbar-nav mr-auto">
                     <li className="nav-item">
-                        <Link className="nav-link" to="/">Devices</Link>
+                        <Link className="nav-link" to="/">Home</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/add-sensor">Add Sensor</Link>
+                        <Link className="nav-link" to="/current-param">Current Parameters</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/add-controller">Add Controller</Link>
+                        <Link className="nav-link" to="/history-param">History Parameters</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/add-param">Add Parameter</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/edit-param">Edit Parameter</Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" to="/login" onClick={this.logout}>Logout</Link>
