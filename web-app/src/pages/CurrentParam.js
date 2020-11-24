@@ -3,8 +3,6 @@ import { Redirect } from "react-router-dom";
 import ParamStore from "../stores/ParamStore";
 import UserStore from "../stores/UserStore";
 
-import Param from "../models/param";
-
 class Params extends Component {
     constructor(props) {
         super(props)
@@ -108,11 +106,11 @@ class Params extends Component {
                                             </div>
                                             <div>
                                                 <label>KNOWLEDGE BASE</label>
-                                                <table className="box" cellPadding="5">
+                                                <table class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th>Text</th>
+                                                            <th width="20">#</th>
+                                                            <th width="300">Text</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -122,11 +120,11 @@ class Params extends Component {
                                             </div>
                                             <div>
                                                 <label>GEO RISK</label>
-                                                <table className="box" cellPadding="5">
+                                                <table class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th>Text</th>
+                                                            <th width="20">#</th>
+                                                            <th width="300">Text</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -136,11 +134,11 @@ class Params extends Component {
                                             </div>
                                             <div>
                                                 <label>PRELIM DESIGN</label>
-                                                <table className="box" cellPadding="5">
+                                                <table class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th>Text</th>
+                                                            <th width="20">#</th>
+                                                            <th width="300">Text</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -150,11 +148,11 @@ class Params extends Component {
                                             </div>
                                             <div>
                                                 <label>ENGAGEMENT</label>
-                                                <table className="box" cellPadding="5">
+                                                <table class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th>Text</th>
+                                                            <th width="20">#</th>
+                                                            <th width="300">Text</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -164,11 +162,11 @@ class Params extends Component {
                                             </div>
                                             <div>
                                                 <label>COMMITMENT</label>
-                                                <table className="box" cellPadding="5">
+                                                <table class="table">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th>Text</th>
+                                                            <th width="20">#</th>
+                                                            <th width="300">Text</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
