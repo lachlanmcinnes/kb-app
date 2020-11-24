@@ -43,9 +43,6 @@ class Navigation extends Component {
                         <Link className="nav-link" to="/">Home</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/current-param">Current Parameters</Link>
-                    </li>
-                    <li className="nav-item">
                         <Link className="nav-link" to="/history-param">History Parameters</Link>
                     </li>
                     <li className="nav-item">

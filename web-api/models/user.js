@@ -5,4 +5,5 @@ module.exports = mongoose.model('User', new mongoose.Schema({
     username: String,
     password: String,
     department: String,
+    areas: Array
 }));

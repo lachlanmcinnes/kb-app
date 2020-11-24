@@ -4,6 +4,8 @@ import axios from 'axios';
 
 import * as env from "../env";
 import * as UserActions from "../actions/UserActions";
+import * as ParamActions from "../actions/ParamActions";
+import ParamStore from "../stores/ParamStore";
 
 class Login extends Component {
     constructor() {
@@ -30,10 +32,11 @@ class Login extends Component {
         const { username, password } = this.state;
         axios.post(`${env.API_URL}/authenticate`, { username, password })
             .then(res => {
-                const { success, message, userId } = res.data;
+                const { success, message, userId, areas } = res.data;
                 if (success) {
                     UserActions.setUserId(userId);
-                    this.props.history.push("/");
+                    ParamActions.fetchParam(areas[0].pit,areas[0].location);
+                    ParamActions.fetchParamHistory(areas[0].pit,areas[0].location);
                 }
                 else {
                     this.setState({
@@ -42,6 +45,10 @@ class Login extends Component {
                         banner: <div><p className="alert alert-danger">{message}</p></div>
                     });
                 }
+            })
+            .then(res => {
+                console.log(ParamStore.getPit())
+                this.props.history.push("/")
             })
             .catch(error => {
                 console.log(`Error: ${error}`);

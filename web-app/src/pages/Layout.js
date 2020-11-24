@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import CurrentParam from "../pages/CurrentParam";
-//import HistoryParam from "../pages/HistoryParam";
+import HistoryParam from "../pages/HistoryParam";
 import AddParam from "../pages/AddParam";
 import EditParam from "../pages/EditParam";
 //import AddCheck from "../pages/AddCheck";
@@ -26,6 +26,7 @@ class Layout extends Component {
                         <Route path="/register" component={Register} />
                         <Route path="/add-param" component={AddParam} />
                         <Route path="/edit-param" component={EditParam} />
+                        <Route path="/history-param" component={HistoryParam} />
                     </div>
                     <Footer />
                 </div>

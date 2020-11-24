@@ -1,23 +1,28 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import controllerStore from "../stores/ControllerStore";
-import sensorStore from "../stores/SensorStore";
-import userStore from '../stores/UserStore';
+import ParamStore from "../stores/ParamStore";
+import UserStore from "../stores/UserStore";
 
-import Controller from "../components/Devices/Controller";
-import Sensor from "../components/Devices/Sensor"
+import Param from "../models/param";
 
-class Devices extends Component {
+class HistoryParams extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            controllers: controllerStore.getAll(),
-            sensors: sensorStore.getUnlinked(),
+            history: ParamStore.getHistory(),
             banner: <div></div>
         }
         this.bannerTimeout = null;
-        this.onControllerStoreChange = this.onControllerStoreChange.bind(this);
-        this.onSensorStoreChange = this.onSensorStoreChange.bind(this);
+    }
+
+    componentDidMount() {
+        const history = ParamStore.getHistory();
+
+        console.log(history);
+
+        this.setState({
+            history
+        });
     }
 
     setBanner(banner) {
@@ -28,60 +33,79 @@ class Devices extends Component {
         this.bannerTimeout = setTimeout(() => {this.setState({banner: <div></div>})}, 5000)
     }
 
-    componentWillMount() {
-        controllerStore.on("change", this.onControllerStoreChange)
-        sensorStore.on("change", this.onSensorStoreChange)
-    }
-
-    componentWillUnmount() {
-        controllerStore.removeListener("change", this.onControllerStoreChange)
-        sensorStore.removeListener("change", this.onSensorStoreChange)
-    }
-
-    onControllerStoreChange() {
-        this.setState({
-            controllers: controllerStore.getAll()
-        });
-        console.log(this.state.controllers);
-    }
-
-    onSensorStoreChange() {
-        this.setState({
-            sensors: sensorStore.getUnlinked()
-        });
-        console.log(this.state.sensors);
-    }
-
     render() {
+
+        let { history } = this.state;
+
+        var renderHistory = history.map((val, idx) => {
+
+            let controls = `collapse-${idx}`;
+            let target = `#collapse-${idx}`
+
+            return(
+
+                <div>
+                    <p>
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target={target} aria-expanded="false" aria-controls={controls}> Show #{idx}</button>
+                    </p>
+                    <div class="collapse" id={controls}>
+                        <div class="card card-body">
+                            <label>KNOWLEDGE BASE</label>
+                            <table className="box" cellPadding="5">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Text</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        val.knowledgebase.length > 0
+                                        ?
+                                            val.knowledgebase.map(j => {
+                                                return (
+                                                    <tr>
+                                                        <td>{j.num}</td>
+                                                        <td>{j.text}</td>
+                                                    </tr>
+                                                )
+                                            })
+                                        :
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            )
+        })
+
         return (
             <div>
                 {
-                    userStore.getUserId() === ''
+                    UserStore.getUserId() === ''
                         ? <Redirect to={{ pathname: "/login" }} />
                         : <div>
                             {this.state.banner}
-                            <h1>Controllers</h1>
+                            <h1>History</h1>
                             {
-                                this.state.controllers.length > 0
-                                    ? this.state.controllers.map(controller => {
-                                        return <Controller key={controller.controllerId} id={controller.controllerId} name={controller.controllerName} ports={controller.ports} setBanner={this.setBanner.bind(this)}/>
-                                    })
-                                    : <p>No controllers.</p>
-                            }
-                            <h1>Unassigned Sensors</h1>
-                            {
-                                this.state.sensors.length > 0
-                                    ? this.state.sensors.map(sensor => {
-                                        return <Sensor key={sensor.sensorId} id={sensor.sensorId} name={sensor.sensorName} setBanner={this.setBanner.bind(this)}/>
-                                    })
-                                    : <p className="text-center">No unassigned sensors.</p>
+                                history.length > 0
+                                    ? 
+                                        <div>
+                                            {renderHistory}
+                                        </div>
+                                    : 
+                                        <p>No Parameters.</p>
                             }
                         </div>
-
                 }
             </div>
         );
     }
 }
 
-export default Devices;
+export default HistoryParams;

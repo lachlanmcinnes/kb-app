@@ -59,6 +59,13 @@ export function setRevision(revision) {
     });
 }
 
+export function setHistory(history) {
+    dispatcher.dispatch({
+        type: "SET_HISTORY",
+        history
+    });
+}
+
 export function fetchParam(pit,location) {
     axios.get(`${env.API_URL}/param/${pit}/${location}`)
         .then(res => {
@@ -95,6 +102,23 @@ export function fetchParam(pit,location) {
                 dispatcher.dispatch({
                     type: "SET_REVISION",
                     revision: res.revision
+                });
+            }
+        })
+        .catch(err => {
+            console.log(`Error: ${err}.`);
+        })
+}
+
+export function fetchParamHistory(pit,location) {
+    axios.get(`${env.API_URL}/history/${pit}/${location}`)
+        .then(res => {
+            res = res.data;
+            console.log(res.history);
+            if (res.success) {
+                dispatcher.dispatch({
+                    type: "SET_HISTORY",
+                    history: res.history
                 });
             }
         })

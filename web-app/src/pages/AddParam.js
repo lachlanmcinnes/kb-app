@@ -10,59 +10,92 @@ class AddParam extends Component {
         this.state = {
             pit: '',
             location: '',
-            knowledgebase: [],
-            georisk: [],
-            prelimdesign: [],
-            engagement: [],
-            commitment: [],
+            knowledgebase: [{num:"", text:""}],
+            georisk: [{num:"", text:""}],
+            prelimdesign: [{num:"", text:""}],
+            engagement: [{num:"", text:""}],
+            commitment: [{num:"", text:""}],
             banner: <div></div>
         }
     }
 
-    onPitChange(e) {
-        this.setState({
-            pit: e.target.value
-        });
+    onPitChange = (e) => {
+        let pit = this.state.pit;
+        pit = e.target.value.toUpperCase();
+        this.setState({pit}, () => console.log(this.state.pit));
     }
 
-    onLocationChange(e) {
-        this.setState({
-            location: e.target.value
-        });
+    onLocationChange = (e) => {
+        let location = this.state.location;
+        location = e.target.value.toUpperCase();
+        this.setState({location}, () => console.log(this.state.location));
     }
 
-    onKnowledgeBaseChange(e){
-        let k = this.state.knowledgebase;
-        k.push(e)
-        this.setState({
-            knowledgebase: k
-        });
+    onKnowledgeBaseChange = (e) => {
+        let knowledgebase = [...this.state.knowledgebase];
+        knowledgebase[e.target.id]["text"] = e.target.value.toUpperCase();
+        knowledgebase[e.target.id]["num"] = e.target.id;
+        this.setState({knowledgebase}, () => console.log(this.state.knowledgebase));
     }
 
-    onGeoRiskChange(e) {
-        this.setState(state => {
-            state.georisk.push(e);
-        });
+    onGeoRiskChange = (e) => {
+        let georisk = [...this.state.georisk];
+        georisk[e.target.id]["text"] = e.target.value.toUpperCase();
+        georisk[e.target.id]["num"] = e.target.id;
+        this.setState({georisk}, () => console.log(this.state.georisk));
     }
 
-    onPrelimDesignChange(e) {
-        this.setState(state => {
-            state.prelimdesign.push(e);
-        });
+    onPrelimDesignChange = (e) => {
+        let prelimdesign = [...this.state.prelimdesign];
+        prelimdesign[e.target.id]["text"] = e.target.value.toUpperCase();
+        prelimdesign[e.target.id]["num"] = e.target.id;
+        this.setState({prelimdesign}, () => console.log(this.state.prelimdesign));
     }
 
-    onEngagementChange(e) {
-        this.setState(state => {
-            state.engagement.push(e);
-        });
+    onEngagementChange = (e) => {
+        let engagement = [...this.state.engagement];
+        engagement[e.target.id]["text"] = e.target.value.toUpperCase();
+        engagement[e.target.id]["num"] = e.target.id;
+        this.setState({engagement}, () => console.log(this.state.engagement));
     }
 
-    onCommitmentChange(e) {
-        this.setState(state => {
-            state.commitment.push(e);
-        });
+    onCommitmentChange = (e) => {
+        let engagement = [...this.state.engagement];
+        engagement[e.target.id]["text"] = e.target.value.toUpperCase();
+        engagement[e.target.id]["num"] = e.target.id;
+        this.setState({engagement}, () => console.log(this.state.engagement));
     }
 
+    addKB = (e) => {
+        this.setState((prevState) => ({
+            knowledgebase: [...prevState.knowledgebase, {num:"", text:""}]
+        }));
+    }
+
+    addGR = (e) => {
+        this.setState((prevState) => ({
+            georisk: [...prevState.georisk, {num:"", text:""}]
+        }));
+    }
+
+    addPD = (e) => {
+        this.setState((prevState) => ({
+            prelimdesign: [...prevState.prelimdesign, {num:"", text:""}]
+        }));
+    }
+
+    addEN = (e) => {
+        this.setState((prevState) => ({
+            engagement: [...prevState.engagement, {num:"", text:""}]
+        }));
+    }
+
+    addCO = (e) => {
+        this.setState((prevState) => ({
+            commitment: [...prevState.commitment, {num:"", text:""}]
+        }));
+    }
+    
     submit() {
         const { pit, location, knowledgebase, georisk, prelimdesign, engagement, commitment } = this.state;
         const params = {
@@ -85,6 +118,7 @@ class AddParam extends Component {
                         ParamActions.setPrelimDesign(prelimdesign);
                         ParamActions.setEngagement(engagement);
                         ParamActions.setCommitment(commitment);
+                        ParamActions.fetchParamHistory(pit,location);
                         this.props.history.push("/");
                     }
                     else {
@@ -99,6 +133,8 @@ class AddParam extends Component {
     }
 
     render() {
+
+        let {knowledgebase, georisk, prelimdesign, engagement, commitment} = this.state
         return (
             <div>
                 <h1>Add Parameters</h1>
@@ -108,18 +144,83 @@ class AddParam extends Component {
                     <input type="text" className="form-control" value={this.state.pit} onChange={this.onPitChange.bind(this)} />
                     <label>Location</label>
                     <input type="text" className="form-control" value={this.state.location} onChange={this.onLocationChange.bind(this)} />
-                    <label>Knowledge Base</label>
-                    <input type="text" className="form-control" value={this.state.knowledgebase} onChange={this.onKnowledgeBaseChange.bind(this)} />
-                    <label>Geo Risk Modelling</label>
-                    <input type="text" className="form-control" value={this.state.georisk} onChange={this.onGeoRiskChange.bind(this)} />
-                    <label>Preliminary Design</label>
-                    <input type="text" className="form-control" value={this.state.prelimdesign} onChange={this.onPrelimDesignChange.bind(this)} />
-                    <label>Engagement</label>
-                    <input type="text" className="form-control" value={this.state.engagement} onChange={this.onEngagementChange.bind(this)} />
-                    <label>Commitment</label>
-                    <input type="text" className="form-control" value={this.state.commitment} onChange={this.onCommitmentChange.bind(this)} />
+                    <div onChange={this.onKnowledgeBaseChange}>
+                        <label>Knowledge Base</label>
+                        <button onClick={this.addKB}>Add Element</button>
+                        {
+                            knowledgebase.map((val, idx) => {
+                                let kbNum = `num-${idx}`, kbText= `text-${idx}`
+                                return (
+                                    <div key={idx}>
+                                        <label>{idx}</label>
+                                        <input type="text" text={kbText} num={kbNum} data-id={idx} id={idx} className="form-control"/>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <div onChange={this.onGeoRiskChange}>
+                        <label>Geo Risk Modelling</label>
+                        <button onClick={this.addGR}>Add Element</button>
+                        {
+                            georisk.map((val, idx) => {
+                                let kbNum = `num-${idx}`, kbText= `text-${idx}`
+                                return (
+                                    <div key={idx}>
+                                        <label>{idx}</label>
+                                        <input type="text" text={kbText} num={kbNum} data-id={idx} id={idx} className="form-control"/>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <div onChange={this.onPrelimDesignChange}>
+                        <label>Prelim Design</label>
+                        <button onClick={this.addPD}>Add Element</button>
+                        {
+                            prelimdesign.map((val, idx) => {
+                                let kbNum = `num-${idx}`, kbText= `text-${idx}`
+                                return (
+                                    <div key={idx}>
+                                        <label>{idx}</label>
+                                        <input type="text" text={kbText} num={kbNum} data-id={idx} id={idx} className="form-control"/>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <div onChange={this.onEngagementChange}>
+                        <label>Engagement</label>
+                        <button onClick={this.addEN}>Add Element</button>
+                        {
+                            engagement.map((val, idx) => {
+                                let kbNum = `num-${idx}`, kbText= `text-${idx}`
+                                return (
+                                    <div key={idx}>
+                                        <label>{idx}</label>
+                                        <input type="text" text={kbText} num={kbNum} data-id={idx} id={idx} className="form-control"/>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <div onChange={this.onCommitmentChange}>
+                        <label>Commitment</label>
+                        <button onClick={this.addCO}>Add Element</button>
+                        {
+                            commitment.map((val, idx) => {
+                                let kbNum = `num-${idx}`, kbText= `text-${idx}`
+                                return (
+                                    <div key={idx}>
+                                        <label>{idx}</label>
+                                        <input type="text" text={kbText} num={kbNum} data-id={idx} id={idx} className="form-control"/>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
-                <button className="btn btn-success" id="submit" onClick={this.submit.bind(this)}>Add Controller</button>
+                <button className="btn btn-success" id="submit" onClick={this.submit.bind(this)}>Submit</button>
             </div>
         );
     }

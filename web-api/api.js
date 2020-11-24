@@ -7,6 +7,7 @@ const axios = require('axios');
 // import models
 const User = require('./models/user');
 const Param = require('./models/param');
+const ParamHistory = require('./models/paramHistory');
 
 // define app
 const app = express();
@@ -88,6 +89,7 @@ app.post('/authenticate', (req, res) => {
                 'message': 'User authenticated successfully.',
                 'userId': user.userId,
                 'department': user.department,
+                'areas': user.areas
             });
         }
     });
@@ -148,7 +150,32 @@ app.get('/param/:pit/:location', (req, res) => {
     });
 });
 
-app.get('/param/add-param', (req, res) => {
+app.get('/history/:pit/:location', (req, res) => {
+    const { pit, location } = req.params;
+    ParamHistory.find({ pit, location }, (err, param) => {
+        if (err || ! param) {
+            return err
+                ? res.json({
+                    'success': false,
+                    'message': err
+                })
+                : res.json({
+                    'success': false,
+                    'message': 'Invalid Location.'
+                });
+        }
+        else {
+            let history = param;
+            return res.json({
+                'success': true,
+                'message': 'Successfully retrieved location history.',
+                history
+            });
+        }
+    });
+});
+
+app.post('/param/add-param', (req, res) => {
     const { pit, location, knowledgebase, georisk, prelimdesign, engagement, commitment } = req.body;
     Param.findOne({ pit, location }, (err, found) => {
         if (err || found) {
@@ -184,17 +211,47 @@ app.get('/param/add-param', (req, res) => {
                         'message': 'New param created successfully.',
                     })
             });
+            let newParamHistory = new ParamHistory({
+                'pit': pit,
+                'location': location,
+                'knowledgebase': knowledgebase,
+                'georisk': georisk,
+                'prelimdesign': prelimdesign,
+                'engagement': engagement,
+                'commitment': commitment,
+                'revision': 1
+            });
+            newParamHistory.save(err => {
+                return err
+                    ? res.json({
+                        'success': false,
+                        'message': err
+                    })
+                    : res.json({
+                        'success': true,
+                        'message': 'New param created successfully.',
+                    })
+            });
         }
     });
 });
 
-app.get('/param/edit-param', (req, res) => {
+app.post('/param/edit-param', (req, res) => {
     const { pit, location, knowledgebase, georisk, prelimdesign, engagement, commitment } = req.body;
-    Param.findOne({ pit, location }, (err, found) => {
-        if (err) {
+    Param.findOne({ pit, location }, (err, param) => {
+        if (err || ! param) {
             return err
-        }else if(found){
-            let { param } = found;
+                ? res.json({
+                    'success': false,
+                    'message': err
+                })
+                : res.json({
+                    'success': false,
+                    'message': 'Invalid Location.'
+                });
+        }else{
+            let rev = param.revision + 1
+
             param.pit = pit;
             param.location = location;
             param.knowledgebase = knowledgebase;
@@ -202,8 +259,32 @@ app.get('/param/edit-param', (req, res) => {
             param.prelimdesign = prelimdesign;
             param.engagement = engagement;
             param.commitment = commitment;
+            param.revision = rev
 
             param.save(err => {
+                return err
+                    ? res.json({
+                        'success':false,
+                        'message': err
+                    })
+                    : res.json({
+                        'success':true,
+                        'message': 'Edit param was suucessful'
+                    })
+            })
+
+            let addHistory = new ParamHistory({
+                'pit': pit,
+                'location': location,
+                'knowledgebase': knowledgebase,
+                'georisk': georisk,
+                'prelimdesign': prelimdesign,
+                'engagement': engagement,
+                'commitment': commitment,
+                'revision': rev
+            })
+
+            addHistory.save(err => {
                 return err
                     ? res.json({
                         'success':false,

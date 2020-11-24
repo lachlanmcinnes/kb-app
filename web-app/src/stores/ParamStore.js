@@ -12,7 +12,8 @@ class ParamStore extends EventEmitter {
         this.prelimdesign = [];
         this.engagement = [];
         this.commitment = [];
-        this.revision = ""
+        this.revision = "";
+        this.history = []
     }
 
     getPit() {
@@ -47,6 +48,10 @@ class ParamStore extends EventEmitter {
         return this.revision;
     }
 
+    getHistory() {
+        return this.history;
+    }
+
 
     handleActions(action) {
         switch (action.type) {
@@ -56,7 +61,7 @@ class ParamStore extends EventEmitter {
                 break;
             }
             case "SET_LOCATION": {
-                this.loaction = action.loaction;
+                this.location = action.location;
                 this.emit("change");
                 break;
             }
@@ -87,6 +92,11 @@ class ParamStore extends EventEmitter {
             }
             case "SET_REVISION": {
                 this.revision = action.revision;
+                this.emit("change");
+                break;
+            }
+            case "SET_HISTORY": {
+                this.history = action.history;
                 this.emit("change");
                 break;
             }
